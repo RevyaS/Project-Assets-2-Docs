@@ -1,0 +1,115 @@
+@startuml
+
+namespace ProjectAssets {
+    class Game <<Component>> {
+        LocationState locationState
+        CharacterState characterState
+        LocationRepository locationRepository
+        CharacterRepository characterRepository
+        Location location
+        Interaction interaction
+    }
+}
+
+namespace ProjectAssets.Data {
+
+}
+
+namespace ProjectAssets.ViewData {
+}
+
+namespace ProjectAssets.Repositories {
+    class LocationRepository <<Repository>> {
+        LocationView GetLocationView(string Name)
+    }
+
+    class CharacterRepository <<Repository>> {
+
+    }
+
+}
+
+namespace ProjectAssets.Characters {
+    class Interaction <<Component>> {
+        
+    }
+
+    class InteractionView <<View>> {
+
+    }
+}
+
+namespace ProjectAssets.Characters.State <<Rectangle>> {
+    class CharacterState <<LogicBlock>> {
+
+    }
+}
+
+namespace ProjectAssets.Locations {
+    class Location <<Component>> {
+        LocationView view
+        LocationRepository locationRepository
+    }
+
+    class LocationView <<View>> {
+        Texture2D BG
+        RedirectButton[] buttons
+    }
+
+    class RedirectButton <<Component>> { 
+        + string TargetLocation
+        + string Text
+        LocationState locationState
+        onClick()
+    }
+
+    class LocationSpot <<Component>> {
+        LocationSpotView view
+    }
+
+
+    class LocationSpotView <<View>> {
+        LocationSpot[] locationSpot
+    }
+
+    class LocationState <<LogicBlock>> {
+        Locations.State currentState
+        void Input(Input input)
+        void When<State>()
+    }
+
+    LocationSpotView ..> LocationState
+    RedirectButton ..> LocationState
+    Location "1" o-- "1" LocationView : Sets
+    LocationView "1" *-- "0..*" LocationSpot
+    LocationSpot "1" *-- "1" LocationSpotView
+    Game "1" o-- "1" Location
+
+    LocationView "1" o-- "1..*" RedirectButton
+}
+
+namespace ProjectAssets.Locations.Input <<Rectangle>>{
+    struct Stop { }
+
+    struct Show { }
+
+    struct ChangeLocation {
+        string LocationName
+    }
+}
+
+namespace ProjectAssets.Locations.State <<Rectangle>> {
+    class Active {
+        LocationRepository locationRepository
+
+        void Input(Input.ChangeLocation input)
+        void Input(Input.Stop input)
+    }
+
+    class Stop {
+        void Input(Input.Show input)
+    } 
+    Active ..> LocationRepository
+}
+
+@enduml
