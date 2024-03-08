@@ -2,14 +2,21 @@
 
 namespace ProjectAssets {
     class Game <<Component>> {
+        .. States ..
         LocationState locationState
         CharacterState characterState
+        .. Repositories ..
         LocationRepository locationRepository
         CharacterRepository characterRepository
+        .. Systems ..
         LocationService locationService
         Location location
         Interaction interaction
+
     }
+
+    Game "1" o-- "1" Locations.Location
+    Game "1" o-- "1" Characters.Interaction
 }
 
 namespace ProjectAssets.Data  {
@@ -18,13 +25,17 @@ namespace ProjectAssets.Data  {
         LocationSpotMap spot
     }
 
-   
+   class PlayerData {
+        RuleSet<InteractRule> rules
+   }
 }
 
-namespace ProjectAssets.Services {
-    class LocationService {
-        LocationView 
+namespace ProjectAssets.Systems {
+    class LocationSystems {
+        LocationRepository locationRepository
     } 
+
+    LocationSystems ..> ProjectAssets.Repositories.LocationRepository
 }
 
 namespace ProjectAssets.Repositories {
@@ -147,7 +158,6 @@ namespace ProjectAssets.Locations {
     Location "1" o-- "1" LocationView : Sets
     LocationView "1" *-- "0..*" LocationSpot
     LocationSpot "1" *-- "1" LocationSpotView
-    Game "1" o-- "1" Location
 
     LocationView "1" o-- "1..*" RedirectButton
 }
