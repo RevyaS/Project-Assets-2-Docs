@@ -6,27 +6,35 @@ namespace ProjectAssets {
         CharacterState characterState
         LocationRepository locationRepository
         CharacterRepository characterRepository
+        LocationService locationService
         Location location
         Interaction interaction
     }
 }
 
-namespace ProjectAssets.Data {
+namespace ProjectAssets.Data  {
+    class LocationSpotCharacter {
+        string characterName
+        LocationSpotMap spot
+    }
 
+   
 }
 
-namespace ProjectAssets.ViewData {
+namespace ProjectAssets.Services {
+    class LocationService {
+        LocationView 
+    } 
 }
 
 namespace ProjectAssets.Repositories {
     class LocationRepository <<Repository>> {
-        LocationView GetLocationView(string Name)
+        LocationView GetLocationView(LocationName Name)
     }
 
     class CharacterRepository <<Repository>> {
 
     }
-
 }
 
 namespace ProjectAssets.Characters {
@@ -37,11 +45,65 @@ namespace ProjectAssets.Characters {
     class InteractionView <<View>> {
 
     }
+
+    class CharacterState <<LogicBlock>> {
+        Characters.State currentState
+        void Input(Input input)
+        void When<State>()
+    }
+}
+
+namespace ProjectAssets.Characters.Data <<Rectangle>> {
+    class CharacterData <<Resource>> {
+        +string FirstName
+        +string LastName
+        +CharacterInteractImages InteractImages
+    }
+
+    class CharacterInteractImages <<Resource>> {
+        +Texture2D Default
+        +Texture2D Startled
+        +Texture2D Surprised
+    }
+}
+
+namespace ProjectAssets.Characters.Input <<Rectangle>> {
+    struct Stop {
+
+    }
+
+    struct Interact {
+        CharacterData character
+    }
+
+    struct Ask {
+        CharacterData character
+    }
+
+    struct Talk {
+        CharacterData character
+    }
 }
 
 namespace ProjectAssets.Characters.State <<Rectangle>> {
-    class CharacterState <<LogicBlock>> {
+    class Stop {
+        void Input(Input.Interact input)
+    }
 
+    class Interact {
+        void Input(Input.Stop input)
+        void Input(Input.Ask input)
+        void Input(Input.Talk input)
+    }
+
+    class Ask {
+        void Input(Input.Stop input)
+        void Input(Input.Interact input)
+    }
+
+    class Talk {
+        void Input(Input.Stop input)
+        void Input(Input.Interact input)
     }
 }
 
@@ -52,8 +114,9 @@ namespace ProjectAssets.Locations {
     }
 
     class LocationView <<View>> {
-        Texture2D BG
-        RedirectButton[] buttons
+        +Texture2D BG
+        +RedirectButton[] Buttons
+        +LocationName LocationName
     }
 
     class RedirectButton <<Component>> { 
@@ -65,6 +128,7 @@ namespace ProjectAssets.Locations {
 
     class LocationSpot <<Component>> {
         LocationSpotView view
+
     }
 
 
@@ -88,7 +152,23 @@ namespace ProjectAssets.Locations {
     LocationView "1" o-- "1..*" RedirectButton
 }
 
-namespace ProjectAssets.Locations.Input <<Rectangle>>{
+
+namespace ProjectAssets.Locations.Data <<Rectangle>> {
+     class LocationSpotMap {
+        LocationName LocationName
+        LocationSpotName LocationSpotName
+    }
+
+    class LocationName {
+        string LocationName
+    } 
+
+    class LocationSpotName {
+        string LocationName
+    } 
+}
+
+namespace ProjectAssets.Locations.Input <<Rectangle>> {
     struct Stop { }
 
     struct Show { }
