@@ -6,44 +6,45 @@ namespace ProjectAssets {
         CharacterState characterState
         LocationRepository locationRepository
         CharacterRepository characterRepository
-        LocationService locationService
         Location location
         Interaction interaction
     }
+    Game "1" o-- "1" Locations.Location
+    Game "1" o-- "1" Characters.Interaction
 }
 
 namespace ProjectAssets.Data  {
     class LocationSpotCharacter {
         string characterName
-        LocationSpotMap spot
+        LocationSpotMapping spot
     }
 
-   
-}
-
-namespace ProjectAssets.Services {
-    class LocationService {
-        LocationView 
-    } 
+    class PlayerData {
+        +Rule InteractRule
+    }
 }
 
 namespace ProjectAssets.Repositories {
     class LocationRepository <<Repository>> {
-        LocationView GetLocationView(LocationName Name)
+        +LocationView GetLocationView(LocationName)
     }
 
     class CharacterRepository <<Repository>> {
+        CharacterData GetCharacterData(CharacterName)
+    }
 
+    class LocationSpotCharacterRepository <<Repository>> {
+        LocationSpotCharacter LoadLocationSpot()
     }
 }
 
 namespace ProjectAssets.Characters {
     class Interaction <<Component>> {
-        
+        InteractionView view
     }
 
     class InteractionView <<View>> {
-
+        +Update(CharacterData)
     }
 
     class CharacterState <<LogicBlock>> {
@@ -51,6 +52,34 @@ namespace ProjectAssets.Characters {
         void Input(Input input)
         void When<State>()
     }
+
+    Interaction "1" *-- "1" InteractionView 
+}
+
+namespace ProjectAssets.Characters.Rules <<Rectangle>> {
+    class Reaction {
+
+    }
+
+    class Rule {
+    }
+
+    class InteractRule {
+        InteractRuleName ruleName
+    }
+
+    interface IRuleSet<Rule> {
+        IList<Rule> AllRules()
+        IList<Rule> Filter(Func<bool>)
+    }
+
+    class RuleSet<Rule> implements IRuleSet{
+        -IList<Rule> rules
+        +IList<Rule> AllRules()
+        +IList<Rule> Filter(Func<bool>)
+    }
+
+    Rule *-- InteractRule
 }
 
 namespace ProjectAssets.Characters.Data <<Rectangle>> {
@@ -65,6 +94,7 @@ namespace ProjectAssets.Characters.Data <<Rectangle>> {
         +Texture2D Startled
         +Texture2D Surprised
     }
+
 }
 
 namespace ProjectAssets.Characters.Input <<Rectangle>> {
@@ -120,7 +150,7 @@ namespace ProjectAssets.Locations {
     }
 
     class RedirectButton <<Component>> { 
-        + string TargetLocation
+        + LocationName TargetLocation
         + string Text
         LocationState locationState
         onClick()
@@ -128,12 +158,14 @@ namespace ProjectAssets.Locations {
 
     class LocationSpot <<Component>> {
         LocationSpotView view
-
+    
     }
 
-
     class LocationSpotView <<View>> {
-        LocationSpot[] locationSpot
+        +Texture2D OccupiedImage
+        +Area2d MouseArea 
+        +LocationSpotName locationSpotName
+        CharacteerState characterState
     }
 
     class LocationState <<LogicBlock>> {
@@ -142,30 +174,38 @@ namespace ProjectAssets.Locations {
         void When<State>()
     }
 
-    LocationSpotView ..> LocationState
     RedirectButton ..> LocationState
-    Location "1" o-- "1" LocationView : Sets
-    LocationView "1" *-- "0..*" LocationSpot
-    LocationSpot "1" *-- "1" LocationSpotView
-    Game "1" o-- "1" Location
+    RedirectButton "1" --* "1" Data.LocationName  
 
+    Location "1" o-- "1" LocationView : Sets
+
+    LocationSpot "1" *-- "1" LocationSpotView
+
+    LocationSpotView ..> CharacterState
+    LocationSpotView "1" *-- "1" Data.LocationSpotName
+
+    LocationView "1" *-- "0..*" LocationSpot
     LocationView "1" o-- "1..*" RedirectButton
+    LocationView "1" *-- "1" Data.LocationName
 }
 
 
 namespace ProjectAssets.Locations.Data <<Rectangle>> {
-     class LocationSpotMap {
-        LocationName LocationName
-        LocationSpotName LocationSpotName
-    }
-
     class LocationName {
         string LocationName
     } 
 
     class LocationSpotName {
         string LocationName
-    } 
+    }
+
+    class LocationSpotMapping {
+        LocationName LocationName
+        LocationSpotName LocationSpotName
+    }
+
+    LocationSpotMapping "1" --* LocationSpotName
+    LocationSpotMapping "1" --* LocationName
 }
 
 namespace ProjectAssets.Locations.Input <<Rectangle>> {
