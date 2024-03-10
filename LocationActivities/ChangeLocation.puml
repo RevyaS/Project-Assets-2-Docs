@@ -1,0 +1,29 @@
+@startuml
+
+Actor Player
+
+activate Player
+activate RedirectButton
+activate LocationState
+activate Location
+activate LocationRepository
+
+Player -> RedirectButton: Pressed
+RedirectButton -> LocationState : Sends ChangeLocation(LocationName)
+LocationState --> Location: Notify ChangeLocation(LocationName)
+Location -> LocationRepository: GetLocationView(LocationName)
+LocationRepository -> LocationView: Loads View from LocationName
+
+activate LocationView
+
+LocationView -->   LocationRepository 
+LocationRepository --> Location: Return LocationView 
+Location -> Location: Replaces view
+
+deactivate RedirectButton
+
+Location --> Player: Shows new view
+
+deactivate Player
+
+@enduml
