@@ -1,0 +1,11 @@
+@startuml
+
+Actor Player
+
+Player -> LocationSpotView: Pressed
+LocationSpotView -> CharacterState: Sends Interact(CharacterData)
+CharacterState -> Interact: Notifies Interact(CharacterData)
+Interact -> InteractView: Update(CharacterData)
+
+
+@enduml
