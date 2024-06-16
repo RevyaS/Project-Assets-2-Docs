@@ -1,0 +1,66 @@
+@startuml
+
+component DialogueInterpreter
+interface DialogueFileParser
+
+folder DialogueAssetFolder {
+  component DialogueFiles
+}
+
+DialogueInterpreter -- DialogueFileParser
+DialogueFileParser --> DialogueFiles
+
+component Characters 
+
+interface CharacterInfoParser
+interface CharacterBehaviourParser
+
+folder CharacterAssetFolder {
+  component CharacterInfo
+  component CharacterBehaviour
+}
+
+Characters -- CharacterInfoParser
+Characters -right- CharacterBehaviourParser
+CharacterInfoParser --> CharacterInfo
+CharacterBehaviourParser --> CharacterBehaviour
+
+component CharacterView
+interface CharacterPresenter
+
+folder CharacterImagesFolder {
+  component CharacterImage
+}
+
+CharacterView -- CharacterPresenter
+CharacterPresenter --> CharacterImage : References
+
+interface DialogueList
+
+CharacterBehaviour -- DialogueList
+DialogueList ..> DialogueFiles : References Dialogues
+
+component Locations
+folder LocationAssetFolder {
+  component LocationImages
+}
+
+component EventBroker
+interface LocationStream
+interface CharacterStream
+
+EventBroker -left- LocationStream
+EventBroker -up- CharacterStream
+
+component Data
+
+component Game
+interface GameView
+
+Game -Up- GameView
+
+Game <--> LocationStream
+Characters <-left-> CharacterStream
+
+
+@enduml

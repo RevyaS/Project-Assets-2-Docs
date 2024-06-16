@@ -1,0 +1,50 @@
+{2}[This is a dialogue line, it will move to the next line below by default]
+{7}[This will ignore empty spaces and find the first dialogue line]
+
+
+
+// This is a comment, this is considered an empty line
+This contains choices, so the player should choose one to move to next line //This will not be shown in the dialogue line
+\- {12}[This choice will just move to the next dialogue line below]
+
+\- {12}[This will also move to the next dialogue line below]
+
+This contains nested dialogues and they are defined by indents
+
+\- {15}[This is a choice that contains nested dialogue]
+  {17}[This is a dialogue line without choices and will go to the next dialogue line below]
+
+  {24}[This dialogue line will go to the next parent dialogue since it doesn't contain any choices]
+
+\- {20}[This is a choices that contains nested dialogue with nested choices]
+  Line 1 
+  \- {22}[Choice 1]
+    {24}[Another Branch goes to next parent branch line]
+  \- {24}[Choice 2 Goes to next line]
+  Line 2
+  \- {33}[Choice will go to the next parent branch line]
+  \- {27}[Choice has more nested lines]
+    {33}[Another branch goes to next possible parent branch line]
+
+\- This will end the dialogue => $END
+
+// This is a key and it must be unique, it is not considered as dialogue line and must be above a dialogue line 
+\~ Sample Key
+This line has a key
+\- {39}[Keys can be used to jump to a certain dialogue => Key 2]
+\- {36}[This just goes to next dialogue line]
+The next dialogue line of this is Keyed so this has no next dialogue and will be the last line of the dialogue
+
+\~ Key 2
+// This is where we will deal with data, the next line of data changes will be triggered after this line
+{48}[If the data did not exist before, it will be generated]
+// This keyword requires the Character Library
+\@Character.fear = 5  //Character is a keyword that refers to the Character who is talking right now, the properties are case sensitive 
+
+\@Location.isDamaged = false //This requires the Location Library
+// The line after the if statement is not visible
+if @Location.isDamaged:
+  This dialogue line isn't available
+This line is not indented so it is not part of the if statement
+
+
